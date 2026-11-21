@@ -54,7 +54,7 @@
 
 ## 10 秒快速上手（无需 `npm install`）
 
-> 前置要求：Node.js `>= 22.19.0`。本仓库已将全部运行时逻辑内联打包为单文件 ESM，**0 外部依赖**，clone 即可直接执行。
+> 前置要求：Node.js `>= 22.19`。本仓库已将全部运行时逻辑内联打包为单文件 ESM，**0 外部依赖**，clone 即可直接执行。
 
 ```bash
 git clone https://github.com/JieX133/qibid-lite.git
