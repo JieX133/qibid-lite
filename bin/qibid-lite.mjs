@@ -68,6 +68,10 @@ async function analyzeSource(input, core) {
   const kind = input.kind === "docx" ? "docx" : input.kind === "pdf-scan" ? "pdf-scan" : input.kind === "pdf-text" ? "pdf-text" : "txt";
   const sections = core.splitSections(text);
   const facts = core.extractTenderFacts(sections, [{ relPath: name, kind, chars: text.length }], "qibid-lite");
+  // 修复：无显式标题时不把默认章节占位名「正文」当成项目名
+  if (!facts.projectName || facts.projectName === "正文" || facts.projectName === "招标公告") {
+    facts.projectName = basename(name, extname(name)) || "";
+  }
   const scoring = core.extractScoring([{ relPath: name, text, tables: input.tables }]);
   const keyDates = core.extractKeyDates(text);
   const disqualify = core.checkDisqualify({ sources: [{ relPath: name, text }] });
@@ -100,7 +104,7 @@ function writeHandoffPack(outDir, name, res) {
     join(outDir, "qibid-pack.json"),
     `${JSON.stringify({
       schemaVersion: 1,
-      generator: "qibid-lite@0.2.0",
+      generator: "qibid-lite@0.2.1",
       exportedAt: new Date().toISOString(),
       sourceName: name,
       projectName: res.facts.projectName || name,

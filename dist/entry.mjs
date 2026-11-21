@@ -998,31 +998,58 @@ function detail(id, part, item, maxScore, basis, where, kindHint) {
 }
 function scoringFromTables(tables, relPath) {
 	const out = [];
+	const FLAG_CELL_RE = /^(?:是|否|客观分?|主观分?|暗标|明标|—|-|\/|分)$/;
 	for (const table of tables) {
 		const flat = table.map((row) => row.join(" ")).join("\n");
 		if (!/分值|评分标准|评审标准|评分因素|评分内容|评审内容/.test(flat)) continue;
 		if (/单价|投标应答|偏离/.test(flat.slice(0, 200))) continue;
 		let section = "";
+		let nameCol = -1;
+		let basisCol = -1;
+		let scoreCol = -1;
+		let objCol = -1;
 		const found = [];
 		for (const row of table) {
 			const cells = row.map((cell) => cell.trim());
 			cells.join(" ");
+			if (/^(序号|评分因素|评审内容|评分项|评审因素|评分项目)$/.test(cells[0] ?? "") || /^(分值|评分标准|评审因素|评分项|评分内容)$/.test(cells[1] ?? "")) {
+				cells.forEach((cell, idx) => {
+					if (nameCol < 0 && /^(?:评审因素|评分因素|评分项|评分项目|评审内容|评分内容|评审项)$/.test(cell)) nameCol = idx;
+					if (basisCol < 0 && /(?:评分标准|评审标准|标准说明|评审细则|评分细则)/.test(cell)) basisCol = idx;
+					if (scoreCol < 0 && /^(?:分值|分数|满分|权重|分值\(分\)|分值（分）)$/.test(cell)) scoreCol = idx;
+					if (objCol < 0 && /(?:是否客观分|客观分|评分性质|评审性质)/.test(cell)) objCol = idx;
+				});
+				continue;
+			}
 			const sectionHead = /^(第[一二三四五六七八九十]部分)?\s*([^\d（(]{2,12})[（(](\d+(?:\.\d+)?)\s*分[）)]/.exec(cells[0] ?? "");
 			if (sectionHead !== null && cells.slice(1).every((cell) => cell === "" || /分值|评分标准|评审标准/.test(cell))) {
 				section = sectionHead[2].trim();
 				continue;
 			}
-			if (/^(序号|评分因素|评审内容|评分项|评审因素)$/.test(cells[0] ?? "") || /^(分值|评分标准)$/.test(cells[1] ?? "")) continue;
-			const scoreIdx = cells.map((cell) => scoreOf(cell)).findIndex((n, i) => n !== null && !(i === 0 && /^\d{1,2}$/.test(cells[0]) && cells.length > 2 && scoreOf(cells[cells.length - 1]) !== null));
+			if (/^[一二三四五六七八九十]+$/.test(cells[0] ?? "") && cells[1] && /(?:报价|价格|商务|技术|服务|综合).*部分/.test(cells[1])) {
+				section = cells[1].trim();
+				continue;
+			}
+			const scores = cells.map((cell) => scoreOf(cell));
+			const hasLaterScore = scores.some((n, i) => i > 0 && n !== null);
+			const scoreIdx = scoreCol >= 0 && scoreCol < cells.length && scores[scoreCol] !== null ? scoreCol : scores.findIndex((n, i) => n !== null && !(i === 0 && /^\d{1,2}$/.test(cells[0]) && hasLaterScore));
 			if (scoreIdx < 0) continue;
-			const max = scoreOf(cells[scoreIdx]);
-			const textCells = cells.filter((cell, i) => i !== scoreIdx && cell !== "" && !/^\d{1,2}$/.test(cell));
-			if (textCells.length === 0) continue;
-			const sorted = [...textCells].sort((a, b) => a.length - b.length);
-			const name = sorted[0];
-			const basis = textCells.length > 1 ? sorted[sorted.length - 1] : "";
+			const max = scores[scoreIdx];
+			let name = "";
+			let basis = "";
+			if (nameCol >= 0 && nameCol !== scoreIdx && cells[nameCol] && !FLAG_CELL_RE.test(cells[nameCol])) name = cells[nameCol];
+			if (basisCol >= 0 && basisCol !== scoreIdx && cells[basisCol]) basis = cells[basisCol];
+			if (!name || !basis) {
+				const textCells = cells.filter((cell, i) => i !== scoreIdx && i !== objCol && cell !== "" && !/^\d{1,2}$/.test(cell) && !FLAG_CELL_RE.test(cell));
+				if (textCells.length === 0) continue;
+				const sorted = [...textCells].sort((a, b) => a.length - b.length);
+				if (!name) name = sorted[0];
+				if (!basis) basis = textCells.length > 1 ? sorted[sorted.length - 1] : "";
+			}
 			if (name.length > 40 || max <= 0 || max > 100) continue;
-			found.push(detail(`s${out.length + found.length + 1}`, partOf(section, name, basis), name, max, basis, { relPath }));
+			const objCell = objCol >= 0 ? cells[objCol] ?? "" : "";
+			const kindHint = objCell === "是" || /^客观/.test(objCell) ? "客观" : objCell === "否" || /^主观/.test(objCell) ? "主观" : void 0;
+			found.push(detail(`s${out.length + found.length + 1}`, partOf(section, name, basis), name, max, basis, { relPath }, kindHint));
 		}
 		if (found.length >= 2) out.push(...found);
 	}

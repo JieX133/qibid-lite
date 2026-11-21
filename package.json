@@ -1,6 +1,6 @@
 {
   "name": "qibid-lite",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "启标青春版（QiBid Lite）— 中国招投标确定性解析引擎（.docx/.pdf/.html/URL）、废标红线体检 CLI 与零依赖标准 MCP Server",
   "license": "AGPL-3.0-or-later",
   "type": "module",
