@@ -1,0 +1,42 @@
+{
+  "name": "qibid-lite",
+  "version": "0.2.0",
+  "description": "启标青春版（QiBid Lite）— 中国招投标确定性解析引擎（.docx/.pdf/.html/URL）、废标红线体检 CLI 与零依赖标准 MCP Server",
+  "license": "AGPL-3.0-or-later",
+  "type": "module",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "bin": {
+    "qibid-lite": "./bin/qibid-lite.mjs"
+  },
+  "exports": {
+    ".": "./bin/qibid-lite.mjs"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "dist/",
+    "core/",
+    "examples/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "tender",
+    "bidding",
+    "china-govbid",
+    "mcp",
+    "mcp-server",
+    "qibid",
+    "docx",
+    "招投标",
+    "标书",
+    "废标检查"
+  ],
+  "homepage": "https://qibid.lingqiai.online/?from=lite",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JieX133/qibid-lite.git"
+  }
+}

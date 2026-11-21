@@ -1,0 +1,14 @@
+QiBid Lite（启标青春版）采用双许可协议（Dual License）：
+
+1. 开源许可：GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)
+   - 个人投标专员、开发者本地运行 CLI / MCP Server、以及企业内部自用完全免费。
+   - 若将本仓库代码或其衍生作品封装为对外提供服务的在线 SaaS / API / 云端平台，必须依据 AGPL-3.0 条款公开完整服务端源代码；否则须取得商业授权。
+
+2. 商业授权（Commercial License）
+   - 如需在闭源商业软件或在线 SaaS 中集成 QiBid Lite 确定性解析引擎与废标规则库，请联系中山市零启数字科技有限公司获取商业 SDK 授权：https://qibid.lingqiai.online/pricing/?from=lite-license
+
+3. 商标声明
+   - 「启标」「QiBid」及相关品牌标识归中山市零启数字科技有限公司所有。未经书面授权，不得使用上述商标对外宣传衍生发行版。
+
+Copyright (c) 2026 中山市零启数字科技有限公司 (Zhongshan Lingqi Digital Technology Co., Ltd.)
+https://www.gnu.org/licenses/agpl-3.0.en.html

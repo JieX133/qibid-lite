@@ -1,0 +1,20 @@
+// Copyright (c) 2026 中山市零启数字科技有限公司. All rights reserved.
+export {
+  checkDisqualify,
+  COMMON_DISQUALIFY_RULES,
+  DISQUALIFY_AREAS,
+  DISQUALIFY_PACKS,
+  DISQUALIFY_RULES,
+  findRule,
+  GOODS_DISQUALIFY_RULES,
+  rulesFor,
+  SERVICES_DISQUALIFY_RULES,
+  validateDisqualifyLibrary,
+  WORKS_DISQUALIFY_RULES,
+  type DisqualifyArea,
+  type DisqualifyHit,
+  type DisqualifyLocator,
+  type DisqualifyPack,
+  type DisqualifyRule,
+  type DisqualifySource,
+} from "../../rules/disqualify/index.ts";
