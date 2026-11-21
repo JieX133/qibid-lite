@@ -10,15 +10,20 @@
   "bin": {
     "qibid-lite": "./bin/qibid-lite.mjs"
   },
+  "scripts": {
+    "test": "node --test test/e2e.test.mjs"
+  },
   "exports": {
     ".": "./bin/qibid-lite.mjs"
   },
   "files": [
+    "assets/",
     "bin/",
     "lib/",
     "dist/",
     "core/",
     "examples/",
+    "test/",
     "README.md",
     "LICENSE"
   ],
